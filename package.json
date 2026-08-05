@@ -1,0 +1,19 @@
+{
+  "name": "dea-analyzer",
+  "version": "1.0.0",
+  "description": "Sortation Operations Dashboard - DEA, Jams, CPT, and Equipment analysis tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "express": "4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["sortation", "dashboard", "analytics", "operations", "dea"],
+  "author": "Shramika",
+  "license": "ISC"
+}

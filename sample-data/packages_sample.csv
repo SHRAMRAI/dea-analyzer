@@ -1,0 +1,31 @@
+amazon_barcode,slam_date,route,last_chute,L0_bucket,L1_bucket,L2_bucket,weight_class,pkg_type,slam_station
+TBA932847561002,2024-03-15,CX-7832,F18,FC Missort,Wrong Route,Divert to Wrong Lane,Standard,Small Parcel,SS-02
+TBA932847561004,2024-03-15,CX-4521,F22,Chute Missort,Wrong Chute,Overflow Redirect,Standard,Small Parcel,SS-01
+TBA932847561006,2024-03-15,CX-7832,F18,FC Missort,Late Induct,Delayed Processing,Heavy,Large Box,SS-02
+TBA932847561009,2024-03-15,CX-9011,F05,Late to SLAM,Processing Delay,Queue Backup,Standard,Small Parcel,SS-03
+TBA932847561011,2024-03-15,CX-4521,F22,Chute Missort,Wrong Chute,Config Mismatch,Standard,Envelope,SS-01
+TBA932847561014,2024-03-15,CX-7832,F18,FC Missort,Wrong Route,Stale Routing Table,Standard,Small Parcel,SS-02
+TBA932847561016,2024-03-15,CX-4521,F12,Late to Divert,Equipment Jam,Chute Full,Heavy,Large Box,SS-01
+TBA932847561019,2024-03-15,CX-3344,F09,Chute Missort,Configuration Error,Wrong Destination Map,Standard,Small Parcel,SS-04
+TBA932847561022,2024-03-15,CX-4521,F22,FC Missort,Wrong Route,Cross-Dock Error,Standard,Small Parcel,SS-01
+TBA932847561026,2024-03-16,CX-7832,F18,FC Missort,Wrong Route,Divert to Wrong Lane,Standard,Small Parcel,SS-02
+TBA932847561028,2024-03-16,CX-3344,F09,Late to SLAM,Staffing Gap,Understaffed Induct,Light,Envelope,SS-04
+TBA932847561031,2024-03-16,CX-7832,F18,Chute Missort,Wrong Chute,Overflow Redirect,Standard,Small Parcel,SS-02
+TBA932847561034,2024-03-16,CX-9011,F05,Late to Divert,Equipment Jam,Chute Blocked,Heavy,Large Box,SS-03
+TBA932847561037,2024-03-16,CX-7832,F18,FC Missort,Wrong Route,Stale Routing Table,Standard,Small Parcel,SS-02
+TBA932847561039,2024-03-16,CX-2211,F15,Chute Missort,Configuration Error,Wrong Destination Map,Standard,Small Parcel,SS-06
+TBA932847561044,2024-03-17,CX-7832,F18,Late to SLAM,Processing Delay,Queue Backup,Standard,Small Parcel,SS-02
+TBA932847561047,2024-03-17,CX-5566,F31,FC Missort,Wrong Route,Cross-Dock Error,Light,Envelope,SS-05
+TBA932847561048,2024-03-17,CX-4521,F22,Chute Missort,Wrong Chute,Config Mismatch,Standard,Small Parcel,SS-01
+TBA400112233001,2024-03-15,CX-4521,F22,Chute Missort,Wrong Chute,Overflow Redirect,Heavy,Large Box,SS-01
+TBA400112233002,2024-03-15,CX-7832,F18,FC Missort,Wrong Route,Stale Routing Table,Standard,Small Parcel,SS-02
+TBA400112233003,2024-03-16,CX-3344,F09,FC Missort,Late Induct,Delayed Processing,Standard,Small Parcel,SS-04
+TBA400112233004,2024-03-16,CX-4521,F12,Late to Divert,Equipment Jam,Chute Full,Heavy,Oversized,SS-01
+TBA400112233005,2024-03-16,CX-9011,F05,Chute Missort,Wrong Chute,Config Mismatch,Standard,Small Parcel,SS-03
+TBA400112233006,2024-03-17,CX-7832,F18,FC Missort,Wrong Route,Divert to Wrong Lane,Light,Envelope,SS-02
+TBA400112233007,2024-03-17,CX-2211,F15,Late to SLAM,Staffing Gap,Understaffed Induct,Standard,Small Parcel,SS-06
+TBA400112233008,2024-03-17,CX-4521,F22,Chute Missort,Configuration Error,Wrong Destination Map,Standard,Small Parcel,SS-01
+TBA400112233009,2024-03-17,CX-5566,F31,FC Missort,Wrong Route,Cross-Dock Error,Heavy,Large Box,SS-05
+TBA400112233010,2024-03-15,CX-8877,F27,Late to SLAM,Processing Delay,Queue Backup,Standard,Small Parcel,SS-07
+TBA400112233011,2024-03-16,CX-8877,F27,Chute Missort,Wrong Chute,Overflow Redirect,Light,Envelope,SS-07
+TBA400112233012,2024-03-17,CX-3344,F09,FC Missort,Late Induct,Delayed Processing,Standard,Small Parcel,SS-04

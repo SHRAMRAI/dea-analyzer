@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEA Analyzer - Sortation Operations Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#c9d1d9;font-family:'Segoe UI',system-ui,sans-serif;font-size:13px}
+#hdr{background:#161b22;border-bottom:1px solid #30363d;padding:10px 20px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:200}
+#hdr h1{font-size:15px;font-weight:700;color:#f0f6fc}
+.sp{flex:1}
+.btn{padding:6px 16px;border-radius:6px;border:1px solid #30363d;background:#21262d;color:#c9d1d9;font-size:12px;cursor:pointer}
+.btn:hover{background:#30363d}
+.btn.pri{border-color:#388bfd;background:rgba(56,139,253,.15);color:#388bfd;font-weight:600}
+.btn.dng{border-color:#f85149;color:#f85149}
+#upload-bar{background:#161b22;border-bottom:1px solid #21262d;padding:8px 20px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ds{display:flex;align-items:center;gap:5px;font-size:11px;color:#8b949e;padding:3px 10px;border-radius:4px;border:1px solid #21262d}
+.ds.on{border-color:#388bfd;color:#c9d1d9}
+.dot{width:6px;height:6px;border-radius:50%;background:#30363d}
+.ds.on .dot{background:#3fb950}
+#tabs{background:#161b22;border-bottom:1px solid #30363d;padding:0 20px;display:flex;gap:2px;position:sticky;top:49px;z-index:199}
+.tb{padding:10px 16px;border:none;background:none;color:#8b949e;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tb:hover{color:#c9d1d9}
+.tb.on{color:#f0f6fc;border-bottom-color:#388bfd}
+#content{padding:20px;max-width:1400px;margin:0 auto}
+.panel{display:none}.panel.on{display:block}
+.krow{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.kc{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px 18px;min-width:140px;flex:1}
+.kc .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#8b949e;margin-bottom:4px}
+.kc .val{font-size:26px;font-weight:700;color:#f0f6fc;line-height:1}
+.kc .sub{font-size:11px;color:#8b949e;margin-top:4px}
+.kc.warn .val{color:#d29922}.kc.bad .val{color:#f85149}.kc.ok .val{color:#3fb950}
+.cr{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.cc{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px;flex:1;min-width:280px}
+.cc h3{font-size:11px;font-weight:700;color:#f0f6fc;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+canvas{max-height:240px}
+.tw{background:#161b22;border:1px solid #30363d;border-radius:8px;overflow:hidden;margin-bottom:20px}
+.tw h3{padding:10px 16px;font-size:11px;font-weight:700;color:#f0f6fc;text-transform:uppercase;border-bottom:1px solid #30363d}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:7px 12px;text-align:left;font-size:10px;text-transform:uppercase;color:#8b949e;border-bottom:1px solid #30363d;background:#0d1117;position:sticky;top:0}
+td{padding:7px 12px;border-bottom:1px solid #21262d}
+tr:hover td{background:rgba(255,255,255,.025)}
+.bx{display:inline-block;padding:1px 7px;border-radius:10px;font-size:10px;font-weight:700}
+.bx.r{background:rgba(248,81,73,.18);color:#f85149}
+.bx.g{background:rgba(63,185,80,.18);color:#3fb950}
+.bx.b{background:rgba(56,139,253,.18);color:#388bfd}
+.bx.y{background:rgba(210,153,34,.18);color:#d29922}
+.ib{background:rgba(56,139,253,.08);border:1px solid rgba(56,139,253,.25);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#c9d1d9;line-height:1.8}
+.ib strong{color:#388bfd}
+#upload-log{display:none;background:#161b22;border:1px solid #30363d;border-radius:6px;padding:8px 12px;margin:8px 20px;font-size:11px;max-height:80px;overflow-y:auto}
+#prog{display:none;color:#388bfd;font-size:11px}
+.drop-zone{border:2px dashed #30363d;border-radius:8px;padding:40px;text-align:center;color:#8b949e;margin-bottom:20px;transition:border-color .2s}
+.drop-zone.over{border-color:#388bfd;background:rgba(56,139,253,.05)}
+</style>
+</head>
+<body>
+
+
+<!-- Header -->
+<div id="hdr">
+  <h1>&#128202; DEA Analyzer</h1>
+  <span class="sp"></span>
+  <span id="status-lbl" style="font-size:11px;color:#8b949e">No data loaded</span>
+  <button class="btn dng" onclick="clearAll()">Clear All</button>
+</div>
+
+<!-- Upload Bar -->
+<div id="upload-bar">
+  <label class="btn pri" style="cursor:pointer">
+    &#128194; Upload CSV
+    <input type="file" id="csv-input" accept=".csv" multiple style="display:none" onchange="handleFiles(this.files)">
+  </label>
+  <span id="prog"></span>
+  <span class="sp"></span>
+  <span class="ds" id="ds-shipments"><span class="dot"></span>Shipments</span>
+  <span class="ds" id="ds-packages"><span class="dot"></span>Packages</span>
+  <span class="ds" id="ds-alarms"><span class="dot"></span>Alarms</span>
+  <span class="ds" id="ds-cpt"><span class="dot"></span>CPT</span>
+  <span class="ds" id="ds-equip"><span class="dot"></span>Equipment</span>
+</div>
+<div id="upload-log"></div>
+
+<!-- Tabs -->
+<div id="tabs">
+  <button class="tb on" onclick="switchTab('overview')">Overview</button>
+  <button class="tb" onclick="switchTab('shipments')">Shipments</button>
+  <button class="tb" onclick="switchTab('packages')">Missorts</button>
+  <button class="tb" onclick="switchTab('alarms')">Jams</button>
+  <button class="tb" onclick="switchTab('cpt')">CPT</button>
+  <button class="tb" onclick="switchTab('equip')">Equipment</button>
+</div>
+
+<!-- Content Panels -->
+<div id="content">
+
+  <!-- Overview Panel -->
+  <div class="panel on" id="panel-overview">
+    <div class="ib">
+      <strong>Welcome to DEA Analyzer!</strong> Upload CSV files from your sortation systems to get started.
+      The app auto-detects file types based on column headers. Try uploading files from the <code>sample-data/</code> folder.
+    </div>
+    <div class="krow" id="kpi-overview"></div>
+    <div class="cr">
+      <div class="cc"><h3>DEA Bucket Distribution</h3><canvas id="chart-dea-dist"></canvas></div>
+      <div class="cc"><h3>Daily Jam Count</h3><canvas id="chart-daily-jams"></canvas></div>
+    </div>
+    <div class="cr">
+      <div class="cc"><h3>Missorts by Chute</h3><canvas id="chart-chute-missorts"></canvas></div>
+      <div class="cc"><h3>Equipment Changes by Type</h3><canvas id="chart-equip-types"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Shipments Panel -->
+  <div class="panel" id="panel-shipments">
+    <div class="krow" id="kpi-shipments"></div>
+    <div class="cr">
+      <div class="cc"><h3>DEA Level 0 Breakdown</h3><canvas id="chart-l0"></canvas></div>
+      <div class="cc"><h3>Shipments by Route</h3><canvas id="chart-routes"></canvas></div>
+    </div>
+    <div class="tw"><h3>Shipment Detail</h3>
+      <div style="overflow-x:auto;max-height:350px;overflow-y:auto">
+        <table id="tbl-shipments"><thead><tr><th>Barcode</th><th>Slam Time</th><th>Route</th><th>Chute</th><th>L0 Bucket</th><th>DEA Bucket</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Packages/Missorts Panel -->
+  <div class="panel" id="panel-packages">
+    <div class="krow" id="kpi-packages"></div>
+    <div class="cr">
+      <div class="cc"><h3>L0 Bucket Distribution</h3><canvas id="chart-pkg-l0"></canvas></div>
+      <div class="cc"><h3>L1 Sub-Buckets</h3><canvas id="chart-pkg-l1"></canvas></div>
+    </div>
+    <div class="tw"><h3>Missort Detail</h3>
+      <div style="overflow-x:auto;max-height:350px;overflow-y:auto">
+        <table id="tbl-packages"><thead><tr><th>Barcode</th><th>Date</th><th>Route</th><th>Chute</th><th>L0</th><th>L1</th><th>L2</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alarms/Jams Panel -->
+  <div class="panel" id="panel-alarms">
+    <div class="krow" id="kpi-alarms"></div>
+    <div class="cr">
+      <div class="cc"><h3>Top Jam Locations</h3><canvas id="chart-jam-locs"></canvas></div>
+      <div class="cc"><h3>Jam Duration Distribution</h3><canvas id="chart-jam-dur"></canvas></div>
+    </div>
+    <div class="tw"><h3>Alarm History</h3>
+      <div style="overflow-x:auto;max-height:350px;overflow-y:auto">
+        <table id="tbl-alarms"><thead><tr><th>Time</th><th>Duration (s)</th><th>Location</th><th>Description</th><th>Area</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CPT Panel -->
+  <div class="panel" id="panel-cpt">
+    <div class="krow" id="kpi-cpt"></div>
+    <div class="cr">
+      <div class="cc"><h3>CPT Misses by Lane</h3><canvas id="chart-cpt-lanes"></canvas></div>
+      <div class="cc"><h3>CPT Buckets</h3><canvas id="chart-cpt-buckets"></canvas></div>
+    </div>
+    <div class="tw"><h3>CPT Miss Detail</h3>
+      <div style="overflow-x:auto;max-height:350px;overflow-y:auto">
+        <table id="tbl-cpt"><thead><tr><th>Lane</th><th>Shift</th><th>Date</th><th>CPT Time</th><th>Bucket</th><th>Location</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment Panel -->
+  <div class="panel" id="panel-equip">
+    <div class="krow" id="kpi-equip"></div>
+    <div class="cr">
+      <div class="cc"><h3>Changes by User</h3><canvas id="chart-equip-users"></canvas></div>
+      <div class="cc"><h3>Human vs System Changes</h3><canvas id="chart-equip-human"></canvas></div>
+    </div>
+    <div class="tw"><h3>Equipment Change Log</h3>
+      <div style="overflow-x:auto;max-height:350px;overflow-y:auto">
+        <table id="tbl-equip"><thead><tr><th>Date/Time</th><th>User</th><th>Change Made</th><th>Type</th><th>Current</th><th>Previous</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
