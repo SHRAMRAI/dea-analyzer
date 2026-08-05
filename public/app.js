@@ -517,7 +517,7 @@ function refreshEquip() {
 }
 
 // ============================================================
-// DRAG & DROP
+// DRAG & DROP + INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   document.body.addEventListener('dragover', function(e) { e.preventDefault(); });
@@ -525,4 +525,15 @@ document.addEventListener('DOMContentLoaded', function() {
     e.preventDefault();
     if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
   });
+
+  // Load demo data on startup so viewers see the dashboard immediately
+  if (typeof DEMO_DATA !== 'undefined') {
+    D.shipments = DEMO_DATA.shipments || [];
+    D.packages = DEMO_DATA.packages || [];
+    D.alarms = DEMO_DATA.alarms || [];
+    D.cpt = DEMO_DATA.cpt || [];
+    D.equip = DEMO_DATA.equip || [];
+    updateDots();
+    refreshAll();
+  }
 });
