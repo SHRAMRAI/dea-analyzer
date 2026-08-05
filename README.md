@@ -27,7 +27,7 @@
 
 ## Why I Built This
 
-During my internship at an Amazon sortation center, I noticed operations teams spent **30-60 minutes per shift** manually cross-referencing Excel spreadsheets to diagnose package flow issues. They had data from 5+ different systems but no unified view. I built this tool to give them instant, actionable insights from a single dashboard.
+During my internship at an Amazon AR site, I noticed operations teams spent **30-60 minutes per shift** manually cross-referencing Excel spreadsheets to diagnose package flow issues. They had data from 5+ different systems but no unified view. I built this tool to give them instant, actionable insights from a single dashboard.
 
 ---
 
