@@ -20,6 +20,44 @@
 
 ---
 
+## Why I Built This
+
+During my internship at an Amazon sortation center, I noticed operations teams spent **30-60 minutes per shift** manually cross-referencing Excel spreadsheets to diagnose package flow issues. They had data from 5+ different systems but no unified view. I built this tool to give them instant, actionable insights from a single dashboard.
+
+---
+
+## What is DEA?
+
+**DEA (Delivery Experience Accuracy)** measures whether a package was sorted correctly and made it to the right delivery route on time. When a package is "DEA Good," it means:
+- It was inducted into the sorter ✅
+- Diverted to the correct chute ✅
+- Loaded onto the right truck ✅
+- Departed before the CPT (Critical Pull Time) deadline ✅
+
+When any of those steps fail, it becomes a **DEA miss** — meaning the customer's package may arrive late.
+
+### Why Do Missorts Happen?
+
+| Root Cause | What Happens | Example |
+|-----------|-------------|---------|
+| **FC Missort** | Package diverted to wrong chute/route | Routing table is stale after a lane change |
+| **Chute Missort** | Correct route but wrong physical chute | Equipment config points two routes to same chute |
+| **Late to SLAM** | Package scanned too late | Induct backup or staffing gap delays processing |
+| **Late to Divert** | Package stuck in sorter | Jam blocks the chute, package recirculates |
+| **Equipment Jam** | Physical blockage on sorter | Oversized package wedges in chute |
+
+### The Problem This Solves
+
+Operations teams need to answer these questions every shift:
+1. **"What's causing our DEA misses today?"** → Bucket breakdown shows if it's missorts, jams, or late processing
+2. **"Which chutes keep jamming?"** → Top offender analysis pinpoints problem equipment
+3. **"Did someone change a config that caused issues?"** → Equipment change log correlates with jam spikes
+4. **"Are we going to miss CPT?"** → CPT tracker shows at-risk lanes before it's too late
+
+Previously this required opening 4-5 spreadsheets, running vlookups, and building pivot tables manually. This dashboard does it in **seconds**.
+
+---
+
 ## Overview
 
 The DEA Analyzer is a web-based dashboard designed for sortation center operations teams. It provides instant insights by processing CSV exports from various operational systems. All data processing happens **client-side** (in the browser), meaning no data is sent to external servers — it stays on your machine.
