@@ -1,171 +1,334 @@
 'use strict';
-// Pre-loaded demo data so viewers see the dashboard immediately
+// ============================================================
+// DEMO DATA - Pre-loaded with patterns that tell operational stories
+// 
+// STORIES THIS DATA TELLS:
+// 1. F18 has a MECHANICAL PROBLEM - recurring jams, high duration
+// 2. User jsmith42 made BAD CONFIG CHANGES on 3/15 that caused missorts
+// 3. NIGHT SHIFT misses CPT 3x more than Day shift
+// 4. F62 is an OVERFLOW CHUTE - receives packages from F54, F55, F53
+// 5. Route CX-7832 has worst DEA because it goes through broken F18
+// ============================================================
 var DEMO_DATA = {};
 
-DEMO_DATA.shipments = [
-  {barcode:"TBA932847561000",slamDate:"2024-03-15 06:23:11",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 08:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561001",slamDate:"2024-03-15 06:25:33",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 08:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561002",slamDate:"2024-03-15 06:31:45",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Wrong Route",cptTime:"2024-03-15 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561003",slamDate:"2024-03-15 06:45:22",route:"CX-9011",shift:"Day",lastChute:"F05",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 09:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561004",slamDate:"2024-03-15 07:02:18",route:"CX-4521",shift:"Day",lastChute:"F22",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Wrong Chute",cptTime:"2024-03-15 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561005",slamDate:"2024-03-15 07:15:41",route:"CX-3344",shift:"Day",lastChute:"F09",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 10:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561006",slamDate:"2024-03-15 07:22:09",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Late Induct",cptTime:"2024-03-15 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561007",slamDate:"2024-03-15 07:38:55",route:"CX-5566",shift:"Day",lastChute:"F31",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 11:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561008",slamDate:"2024-03-15 07:44:12",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 08:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561009",slamDate:"2024-03-15 07:51:33",route:"CX-9011",shift:"Day",lastChute:"F05",l0:"Sortation",l1:"Late to SLAM",deaBucket:"Late to SLAM - Processing",cptTime:"2024-03-15 09:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561010",slamDate:"2024-03-15 08:05:27",route:"CX-2211",shift:"Day",lastChute:"F15",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 10:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561011",slamDate:"2024-03-15 08:12:44",route:"CX-4521",shift:"Day",lastChute:"F22",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Wrong Chute",cptTime:"2024-03-15 10:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561012",slamDate:"2024-03-15 08:28:19",route:"CX-3344",shift:"Day",lastChute:"F09",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 10:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561013",slamDate:"2024-03-15 08:35:52",route:"CX-8877",shift:"Day",lastChute:"F27",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 12:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561014",slamDate:"2024-03-15 08:42:11",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Wrong Route",cptTime:"2024-03-15 10:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561015",slamDate:"2024-03-15 09:01:38",route:"CX-5566",shift:"Night",lastChute:"F31",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 11:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561016",slamDate:"2024-03-15 09:15:24",route:"CX-4521",shift:"Night",lastChute:"F12",l0:"Sortation",l1:"Late to Divert",deaBucket:"Late to Divert - Jam",cptTime:"2024-03-15 10:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561017",slamDate:"2024-03-15 09:28:47",route:"CX-2211",shift:"Night",lastChute:"F15",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 12:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561018",slamDate:"2024-03-15 09:35:16",route:"CX-9011",shift:"Night",lastChute:"F05",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-15 12:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561019",slamDate:"2024-03-15 09:48:33",route:"CX-3344",shift:"Night",lastChute:"F09",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Config",cptTime:"2024-03-15 12:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561020",slamDate:"2024-03-16 06:15:33",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-16 08:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561021",slamDate:"2024-03-16 06:28:41",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Wrong Route",cptTime:"2024-03-16 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561022",slamDate:"2024-03-16 06:42:55",route:"CX-9011",shift:"Day",lastChute:"F05",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-16 09:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561023",slamDate:"2024-03-16 07:05:18",route:"CX-3344",shift:"Day",lastChute:"F09",l0:"Sortation",l1:"Late to SLAM",deaBucket:"Late to SLAM - Staffing",cptTime:"2024-03-16 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561024",slamDate:"2024-03-16 07:22:33",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-16 09:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561025",slamDate:"2024-03-16 07:55:12",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Wrong Chute",cptTime:"2024-03-16 09:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561026",slamDate:"2024-03-16 08:11:29",route:"CX-2211",shift:"Day",lastChute:"F15",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-16 10:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561027",slamDate:"2024-03-16 08:45:58",route:"CX-9011",shift:"Day",lastChute:"F05",l0:"Sortation",l1:"Late to Divert",deaBucket:"Late to Divert - Jam",cptTime:"2024-03-16 09:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561028",slamDate:"2024-03-16 09:22:17",route:"CX-3344",shift:"Night",lastChute:"F09",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-16 12:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561029",slamDate:"2024-03-16 09:38:42",route:"CX-7832",shift:"Night",lastChute:"F18",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Wrong Route",cptTime:"2024-03-16 12:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561030",slamDate:"2024-03-16 10:12:28",route:"CX-2211",shift:"Night",lastChute:"F15",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Config",cptTime:"2024-03-16 12:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561031",slamDate:"2024-03-17 06:18:45",route:"CX-4521",shift:"Day",lastChute:"F12",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-17 08:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561032",slamDate:"2024-03-17 06:35:12",route:"CX-7832",shift:"Day",lastChute:"F18",l0:"Sortation",l1:"Late to SLAM",deaBucket:"Late to SLAM - Processing",cptTime:"2024-03-17 08:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561033",slamDate:"2024-03-17 06:52:28",route:"CX-3344",shift:"Day",lastChute:"F09",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-17 09:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561034",slamDate:"2024-03-17 07:08:44",route:"CX-9011",shift:"Day",lastChute:"F05",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-17 09:00:00",deaMissQty:"0"},
-  {barcode:"TBA932847561035",slamDate:"2024-03-17 07:25:11",route:"CX-5566",shift:"Day",lastChute:"F31",l0:"Sortation",l1:"FC Missort",deaBucket:"FC Missort - Wrong Route",cptTime:"2024-03-17 09:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561036",slamDate:"2024-03-17 07:42:33",route:"CX-4521",shift:"Day",lastChute:"F22",l0:"Sortation",l1:"Chute Missort",deaBucket:"Chute Missort - Wrong Chute",cptTime:"2024-03-17 09:00:00",deaMissQty:"1"},
-  {barcode:"TBA932847561037",slamDate:"2024-03-17 07:58:19",route:"CX-2211",shift:"Day",lastChute:"F15",l0:"Good",l1:"On Time",deaBucket:"Good - On Time",cptTime:"2024-03-17 10:00:00",deaMissQty:"0"}
-];
+// Generate shipment data - 220 records across 5 days
+// Pattern: CX-7832 (goes to F18) has 40% miss rate, others ~10%
+DEMO_DATA.shipments = (function(){
+  var rows = [];
+  var routes = ['CX-7832','CX-4521','CX-9011','CX-3344','CX-5566','CX-2211','CX-8877'];
+  var chutes = {
+    'CX-7832':'F18','CX-4521':'F12','CX-9011':'F05',
+    'CX-3344':'F09','CX-5566':'F31','CX-2211':'F15','CX-8877':'F27'
+  };
+  var days = ['2024-03-15','2024-03-16','2024-03-17','2024-03-18','2024-03-19'];
+  var shifts = ['Day','Night'];
+  var id = 100;
+
+  days.forEach(function(day){
+    shifts.forEach(function(shift){
+      var baseHour = shift === 'Day' ? 6 : 18;
+      routes.forEach(function(route){
+        // Each route gets ~3-4 packages per shift
+        var count = 3 + Math.floor(Math.random()*2);
+        for(var i=0; i<count; i++){
+          id++;
+          var hour = baseHour + Math.floor(i*2);
+          var min = Math.floor(Math.random()*59);
+          var time = day+' '+String(hour).padStart(2,'0')+':'+String(min).padStart(2,'0')+':00';
+          var isMiss = false;
+          var l0 = 'Good';
+          var l1 = 'On Time';
+          var bucket = 'Good - On Time';
+          var chute = chutes[route];
+          var missQty = '0';
+
+          // CX-7832 -> F18: 40% miss rate (mechanical issue)
+          if(route === 'CX-7832' && Math.random() < 0.4){
+            isMiss = true;
+            l0 = 'Sortation';
+            l1 = 'Late to Divert';
+            bucket = 'Late to Divert - Equipment Jam';
+            missQty = '1';
+          }
+          // After jsmith42's bad config on 3/15, CX-4521 gets missorted to F22
+          else if(route === 'CX-4521' && day === '2024-03-15' && shift === 'Night' && Math.random() < 0.6){
+            isMiss = true;
+            l0 = 'Sortation';
+            l1 = 'Chute Missort';
+            bucket = 'Chute Missort - Config Error';
+            chute = 'F22';
+            missQty = '1';
+          }
+          // CX-4521 still bad on 3/16 until config fixed mid-day
+          else if(route === 'CX-4521' && day === '2024-03-16' && shift === 'Day' && hour < 10 && Math.random() < 0.5){
+            isMiss = true;
+            l0 = 'Sortation';
+            l1 = 'Chute Missort';
+            bucket = 'Chute Missort - Config Error';
+            chute = 'F22';
+            missQty = '1';
+          }
+          // Night shift has more late-to-SLAM issues (staffing)
+          else if(shift === 'Night' && Math.random() < 0.15){
+            isMiss = true;
+            l0 = 'Sortation';
+            l1 = 'Late to SLAM';
+            bucket = 'Late to SLAM - Staffing Gap';
+            missQty = '1';
+          }
+          // General low-level missort noise
+          else if(Math.random() < 0.05){
+            isMiss = true;
+            l0 = 'Sortation';
+            l1 = 'FC Missort';
+            bucket = 'FC Missort - Wrong Route';
+            missQty = '1';
+          }
+
+          rows.push({
+            barcode:'TBA9328475'+String(id).padStart(5,'0'),
+            slamDate:time,
+            route:route,
+            shift:shift,
+            lastChute:chute,
+            l0:l0,
+            l1:l1,
+            deaBucket:bucket,
+            cptTime:day+' '+(shift==='Day'?'10:00:00':'22:00:00'),
+            deaMissQty:missQty
+          });
+        }
+      });
+    });
+  });
+  return rows;
+})();
 
 
-DEMO_DATA.packages = [
-  {barcode:"TBA932847561002",slamDate:"2024-03-15",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Divert to Wrong Lane"},
-  {barcode:"TBA932847561004",slamDate:"2024-03-15",route:"CX-4521",lastChute:"F22",l0:"Chute Missort",l1:"Wrong Chute",l2:"Overflow Redirect"},
-  {barcode:"TBA932847561006",slamDate:"2024-03-15",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Late Induct",l2:"Delayed Processing"},
-  {barcode:"TBA932847561009",slamDate:"2024-03-15",route:"CX-9011",lastChute:"F05",l0:"Late to SLAM",l1:"Processing Delay",l2:"Queue Backup"},
-  {barcode:"TBA932847561011",slamDate:"2024-03-15",route:"CX-4521",lastChute:"F22",l0:"Chute Missort",l1:"Wrong Chute",l2:"Config Mismatch"},
-  {barcode:"TBA932847561014",slamDate:"2024-03-15",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Stale Routing Table"},
-  {barcode:"TBA932847561016",slamDate:"2024-03-15",route:"CX-4521",lastChute:"F12",l0:"Late to Divert",l1:"Equipment Jam",l2:"Chute Full"},
-  {barcode:"TBA932847561019",slamDate:"2024-03-15",route:"CX-3344",lastChute:"F09",l0:"Chute Missort",l1:"Configuration Error",l2:"Wrong Destination Map"},
-  {barcode:"TBA932847561021",slamDate:"2024-03-16",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Divert to Wrong Lane"},
-  {barcode:"TBA932847561023",slamDate:"2024-03-16",route:"CX-3344",lastChute:"F09",l0:"Late to SLAM",l1:"Staffing Gap",l2:"Understaffed Induct"},
-  {barcode:"TBA932847561025",slamDate:"2024-03-16",route:"CX-7832",lastChute:"F18",l0:"Chute Missort",l1:"Wrong Chute",l2:"Overflow Redirect"},
-  {barcode:"TBA932847561027",slamDate:"2024-03-16",route:"CX-9011",lastChute:"F05",l0:"Late to Divert",l1:"Equipment Jam",l2:"Chute Blocked"},
-  {barcode:"TBA932847561029",slamDate:"2024-03-16",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Stale Routing Table"},
-  {barcode:"TBA932847561030",slamDate:"2024-03-16",route:"CX-2211",lastChute:"F15",l0:"Chute Missort",l1:"Configuration Error",l2:"Wrong Destination Map"},
-  {barcode:"TBA932847561032",slamDate:"2024-03-17",route:"CX-7832",lastChute:"F18",l0:"Late to SLAM",l1:"Processing Delay",l2:"Queue Backup"},
-  {barcode:"TBA932847561035",slamDate:"2024-03-17",route:"CX-5566",lastChute:"F31",l0:"FC Missort",l1:"Wrong Route",l2:"Cross-Dock Error"},
-  {barcode:"TBA932847561036",slamDate:"2024-03-17",route:"CX-4521",lastChute:"F22",l0:"Chute Missort",l1:"Wrong Chute",l2:"Config Mismatch"},
-  {barcode:"TBA400112233001",slamDate:"2024-03-15",route:"CX-4521",lastChute:"F22",l0:"Chute Missort",l1:"Wrong Chute",l2:"Overflow Redirect"},
-  {barcode:"TBA400112233002",slamDate:"2024-03-15",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Stale Routing Table"},
-  {barcode:"TBA400112233003",slamDate:"2024-03-16",route:"CX-3344",lastChute:"F09",l0:"FC Missort",l1:"Late Induct",l2:"Delayed Processing"},
-  {barcode:"TBA400112233004",slamDate:"2024-03-16",route:"CX-4521",lastChute:"F12",l0:"Late to Divert",l1:"Equipment Jam",l2:"Chute Full"},
-  {barcode:"TBA400112233005",slamDate:"2024-03-17",route:"CX-7832",lastChute:"F18",l0:"FC Missort",l1:"Wrong Route",l2:"Divert to Wrong Lane"},
-  {barcode:"TBA400112233006",slamDate:"2024-03-17",route:"CX-2211",lastChute:"F15",l0:"Late to SLAM",l1:"Staffing Gap",l2:"Understaffed Induct"},
-  {barcode:"TBA400112233007",slamDate:"2024-03-17",route:"CX-4521",lastChute:"F22",l0:"Chute Missort",l1:"Configuration Error",l2:"Wrong Destination Map"}
-];
+// ALARMS: F18 has 45 jams (mechanical issue), others have 3-8 each
+// F18 avg duration: 120s (others: 30-50s) - CLEAR mechanical problem
+DEMO_DATA.alarms = (function(){
+  var rows = [];
+  var days = ['2024-03-15','2024-03-16','2024-03-17','2024-03-18','2024-03-19'];
+  
+  days.forEach(function(day){
+    // F18: 9 jams per day, high duration (MECHANICAL FAILURE pattern)
+    for(var i=0; i<9; i++){
+      var hour = 6 + Math.floor(i*2);
+      var min = Math.floor(Math.random()*59);
+      var duration = 90 + Math.floor(Math.random()*120); // 90-210 seconds!
+      rows.push({
+        time: new Date(day+'T'+String(hour).padStart(2,'0')+':'+String(min).padStart(2,'0')+':00'),
+        duration: duration,
+        chute: 'F18',
+        description: 'CHUTE 18 PHOTO BLOCKED - DIVERTER ARM STUCK',
+        area: 'Zone B'
+      });
+    }
+    // F12: 2 jams per day (normal wear)
+    for(var j=0; j<2; j++){
+      rows.push({
+        time: new Date(day+'T'+String(7+j*4).padStart(2,'0')+':'+String(Math.floor(Math.random()*59)).padStart(2,'0')+':00'),
+        duration: 25 + Math.floor(Math.random()*30),
+        chute: 'F12',
+        description: 'CHUTE 12 PHOTO BLOCKED - PACKAGE JAM',
+        area: 'Zone A'
+      });
+    }
+    // F22: 2 jams per day
+    for(var k=0; k<2; k++){
+      rows.push({
+        time: new Date(day+'T'+String(8+k*5).padStart(2,'0')+':'+String(Math.floor(Math.random()*59)).padStart(2,'0')+':00'),
+        duration: 30 + Math.floor(Math.random()*25),
+        chute: 'F22',
+        description: 'CHUTE 22 PHOTO BLOCKED - OVERSIZED PACKAGE',
+        area: 'Zone A'
+      });
+    }
+    // IND01: 1 jam per day
+    rows.push({
+      time: new Date(day+'T09:'+String(Math.floor(Math.random()*59)).padStart(2,'0')+':00'),
+      duration: 40 + Math.floor(Math.random()*20),
+      chute: 'IND01',
+      description: 'IND01 PHOTO BLOCKED - INDUCT BACKUP',
+      area: 'Zone A'
+    });
+    // F05: 1 jam per day
+    rows.push({
+      time: new Date(day+'T11:'+String(Math.floor(Math.random()*59)).padStart(2,'0')+':00'),
+      duration: 35 + Math.floor(Math.random()*20),
+      chute: 'F05',
+      description: 'CHUTE 05 PHOTO BLOCKED - PACKAGE JAM',
+      area: 'Zone C'
+    });
+    // F62: 1 jam per day (overflow)
+    rows.push({
+      time: new Date(day+'T14:'+String(Math.floor(Math.random()*59)).padStart(2,'0')+':00'),
+      duration: 60 + Math.floor(Math.random()*30),
+      chute: 'F62',
+      description: 'CHUTE 62 PHOTO BLOCKED - CHUTE FULL OVERFLOW',
+      area: 'Zone B'
+    });
+  });
+  return rows;
+})();
 
 
-DEMO_DATA.alarms = [
-  {time:new Date("2024-03-15 06:45:22"),duration:45,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - PACKAGE JAM",area:"Zone A"},
-  {time:new Date("2024-03-15 07:02:11"),duration:120,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - MULTIPLE PACKAGES",area:"Zone B"},
-  {time:new Date("2024-03-15 07:15:33"),duration:30,chute:"IND01",description:"IND01 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone A"},
-  {time:new Date("2024-03-15 07:28:44"),duration:65,chute:"F22",description:"CHUTE 22 PHOTO BLOCKED - OVERSIZED PACKAGE",area:"Zone A"},
-  {time:new Date("2024-03-15 07:45:12"),duration:180,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - CHUTE FULL",area:"Zone B"},
-  {time:new Date("2024-03-15 08:02:55"),duration:25,chute:"F09",description:"CHUTE 09 PHOTO BLOCKED - PACKAGE JAM",area:"Zone C"},
-  {time:new Date("2024-03-15 08:18:33"),duration:90,chute:"Other",description:"LOAD DETECT JAM - BELT ACCUMULATION",area:"Zone A"},
-  {time:new Date("2024-03-15 08:35:17"),duration:55,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - PACKAGE JAM",area:"Zone A"},
-  {time:new Date("2024-03-15 08:52:44"),duration:35,chute:"IND02",description:"IND02 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone B"},
-  {time:new Date("2024-03-15 09:05:28"),duration:150,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - MULTIPLE PACKAGES",area:"Zone B"},
-  {time:new Date("2024-03-15 09:22:11"),duration:40,chute:"F05",description:"CHUTE 05 PHOTO BLOCKED - PACKAGE JAM",area:"Zone C"},
-  {time:new Date("2024-03-15 09:38:55"),duration:75,chute:"F22",description:"CHUTE 22 PHOTO BLOCKED - OVERSIZED PACKAGE",area:"Zone A"},
-  {time:new Date("2024-03-15 09:55:33"),duration:20,chute:"F31",description:"CHUTE 31 PHOTO BLOCKED - PACKAGE JAM",area:"Zone D"},
-  {time:new Date("2024-03-15 10:12:17"),duration:110,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - CHUTE FULL",area:"Zone B"},
-  {time:new Date("2024-03-15 10:28:44"),duration:60,chute:"IND01",description:"IND01 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone A"},
-  {time:new Date("2024-03-15 10:45:28"),duration:85,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - PACKAGE JAM",area:"Zone A"},
-  {time:new Date("2024-03-16 06:30:22"),duration:55,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - PACKAGE JAM",area:"Zone B"},
-  {time:new Date("2024-03-16 06:48:33"),duration:130,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - CHUTE FULL",area:"Zone A"},
-  {time:new Date("2024-03-16 07:05:17"),duration:40,chute:"F22",description:"CHUTE 22 PHOTO BLOCKED - OVERSIZED PACKAGE",area:"Zone A"},
-  {time:new Date("2024-03-16 07:22:44"),duration:95,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - MULTIPLE PACKAGES",area:"Zone B"},
-  {time:new Date("2024-03-16 07:38:11"),duration:30,chute:"IND01",description:"IND01 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone A"},
-  {time:new Date("2024-03-16 07:55:55"),duration:165,chute:"F05",description:"CHUTE 05 PHOTO BLOCKED - PACKAGE JAM",area:"Zone C"},
-  {time:new Date("2024-03-16 08:12:28"),duration:50,chute:"F31",description:"CHUTE 31 PHOTO BLOCKED - PACKAGE JAM",area:"Zone D"},
-  {time:new Date("2024-03-16 08:28:44"),duration:70,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - CHUTE FULL",area:"Zone B"},
-  {time:new Date("2024-03-16 08:45:17"),duration:25,chute:"F09",description:"CHUTE 09 PHOTO BLOCKED - PACKAGE JAM",area:"Zone C"},
-  {time:new Date("2024-03-16 09:02:33"),duration:140,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - MULTIPLE PACKAGES",area:"Zone A"},
-  {time:new Date("2024-03-16 09:18:11"),duration:35,chute:"IND02",description:"IND02 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone B"},
-  {time:new Date("2024-03-16 09:35:55"),duration:80,chute:"F22",description:"CHUTE 22 PHOTO BLOCKED - PACKAGE JAM",area:"Zone A"},
-  {time:new Date("2024-03-17 06:25:33"),duration:60,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - PACKAGE JAM",area:"Zone B"},
-  {time:new Date("2024-03-17 06:42:17"),duration:45,chute:"F12",description:"CHUTE 12 PHOTO BLOCKED - PACKAGE JAM",area:"Zone A"},
-  {time:new Date("2024-03-17 06:58:44"),duration:155,chute:"F22",description:"CHUTE 22 PHOTO BLOCKED - CHUTE FULL",area:"Zone A"},
-  {time:new Date("2024-03-17 07:15:28"),duration:30,chute:"F09",description:"CHUTE 09 PHOTO BLOCKED - PACKAGE JAM",area:"Zone C"},
-  {time:new Date("2024-03-17 07:32:11"),duration:90,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - MULTIPLE PACKAGES",area:"Zone B"},
-  {time:new Date("2024-03-17 07:48:55"),duration:40,chute:"IND01",description:"IND01 PHOTO BLOCKED - INDUCT BACKUP",area:"Zone A"},
-  {time:new Date("2024-03-17 08:05:33"),duration:75,chute:"F05",description:"CHUTE 05 PHOTO BLOCKED - OVERSIZED PACKAGE",area:"Zone C"},
-  {time:new Date("2024-03-17 08:22:17"),duration:110,chute:"F18",description:"CHUTE 18 PHOTO BLOCKED - CHUTE FULL",area:"Zone B"},
-  {time:new Date("2024-03-17 08:38:44"),duration:50,chute:"F31",description:"CHUTE 31 PHOTO BLOCKED - PACKAGE JAM",area:"Zone D"},
-  {time:new Date("2024-03-17 08:55:28"),duration:35,chute:"Other",description:"LOAD DETECT JAM - BELT ACCUMULATION",area:"Zone A"}
-];
+// EQUIPMENT: jsmith42 made 3 BAD config changes on 3/15 evening that broke CX-4521 routing
+// Pattern: System auto-changes are fine, jsmith42's manual changes caused missorts
+DEMO_DATA.equip = (function(){
+  var rows = [];
+  var days = ['2024-03-15','2024-03-16','2024-03-17','2024-03-18','2024-03-19'];
+  
+  // === THE BAD CHANGES by jsmith42 on 3/15 evening ===
+  rows.push({dt:new Date('2024-03-15T17:30:00'),userId:'jsmith42',changeMade:'Chute F12 destination changed to F22 (WRONG - broke CX-4521)',typeOfChange:'Divert Destination',current:'F22',previous:'F12',isSystem:false});
+  rows.push({dt:new Date('2024-03-15T17:32:00'),userId:'jsmith42',changeMade:'Route CX-4521 reassigned from F12 to F22',typeOfChange:'Divert Destination',current:'CX-4521 -> F22',previous:'CX-4521 -> F12',isSystem:false});
+  rows.push({dt:new Date('2024-03-15T17:35:00'),userId:'jsmith42',changeMade:'Chute F22 weight limit increased to 50lbs',typeOfChange:'Chute Config',current:'50 lbs',previous:'30 lbs',isSystem:false});
+  
+  // === FIX by mwilson7 on 3/16 morning ===
+  rows.push({dt:new Date('2024-03-16T09:45:00'),userId:'mwilson7',changeMade:'REVERTED: Route CX-4521 back to F12 (fixing jsmith42 error)',typeOfChange:'Divert Destination',current:'CX-4521 -> F12',previous:'CX-4521 -> F22',isSystem:false});
+  rows.push({dt:new Date('2024-03-16T09:47:00'),userId:'mwilson7',changeMade:'REVERTED: Chute F22 weight limit back to 30lbs',typeOfChange:'Chute Config',current:'30 lbs',previous:'50 lbs',isSystem:false});
+
+  // Normal system auto-changes across all days
+  days.forEach(function(day){
+    // HULK auto-balance (system - good)
+    rows.push({dt:new Date(day+'T06:30:00'),userId:'HULK_SYSTEM',changeMade:'Auto-balance chute F12 load',typeOfChange:'Load Balance',current:'Active',previous:'Paused',isSystem:true});
+    rows.push({dt:new Date(day+'T06:35:00'),userId:'FLOCO_AUTO',changeMade:'Belt speed adjustment - conveyor 3',typeOfChange:'Belt Speed',current:'High',previous:'Medium',isSystem:true});
+    rows.push({dt:new Date(day+'T12:00:00'),userId:'HULK_SYSTEM',changeMade:'Auto-balance chute F18 load',typeOfChange:'Load Balance',current:'Active',previous:'Idle',isSystem:true});
+    rows.push({dt:new Date(day+'T14:00:00'),userId:'FLOCO_AUTO',changeMade:'Chute F62 overflow threshold updated',typeOfChange:'Load Threshold',current:'80%',previous:'85%',isSystem:true});
+    rows.push({dt:new Date(day+'T18:00:00'),userId:'HULK_SYSTEM',changeMade:'Night shift auto-rebalance all zones',typeOfChange:'Load Balance',current:'Night Mode',previous:'Day Mode',isSystem:true});
+  });
+
+  // Other human changes (normal operations)
+  rows.push({dt:new Date('2024-03-15T08:00:00'),userId:'mwilson7',changeMade:'Chute F09 reopened after jam clear',typeOfChange:'Chute Status',current:'Open',previous:'Closed',isSystem:false});
+  rows.push({dt:new Date('2024-03-16T07:15:00'),userId:'dpark23',changeMade:'Induct 1 speed reduced for safety',typeOfChange:'Belt Speed',current:'Low',previous:'Medium',isSystem:false});
+  rows.push({dt:new Date('2024-03-17T08:30:00'),userId:'mwilson7',changeMade:'F18 closed for maintenance (diverter repair)',typeOfChange:'Chute Status',current:'Closed',previous:'Open',isSystem:false});
+  rows.push({dt:new Date('2024-03-17T10:00:00'),userId:'mwilson7',changeMade:'F18 reopened after diverter repair',typeOfChange:'Chute Status',current:'Open',previous:'Closed',isSystem:false});
+  rows.push({dt:new Date('2024-03-18T06:45:00'),userId:'dpark23',changeMade:'Chute F31 destination updated',typeOfChange:'Divert Destination',current:'CX-5566',previous:'CX-8877',isSystem:false});
+  rows.push({dt:new Date('2024-03-19T07:00:00'),userId:'dpark23',changeMade:'Emergency stop cleared Zone B',typeOfChange:'Zone Status',current:'Running',previous:'E-Stop',isSystem:false});
+
+  // jsmith42 other changes (showing pattern of carelessness)
+  rows.push({dt:new Date('2024-03-17T17:00:00'),userId:'jsmith42',changeMade:'Chute F27 destination changed',typeOfChange:'Divert Destination',current:'CX-8877',previous:'CX-2211',isSystem:false});
+  rows.push({dt:new Date('2024-03-18T17:15:00'),userId:'jsmith42',changeMade:'Chute F05 weight limit changed',typeOfChange:'Chute Config',current:'45 lbs',previous:'30 lbs',isSystem:false});
+  rows.push({dt:new Date('2024-03-19T17:30:00'),userId:'jsmith42',changeMade:'Route CX-9011 chute reassigned',typeOfChange:'Divert Destination',current:'CX-9011 -> F09',previous:'CX-9011 -> F05',isSystem:false});
+
+  return rows;
+})();
 
 
-DEMO_DATA.cpt = [
-  {lane:"CX-4521",shift:"Day",date:"2024-03-15",cptTime:"08:00",bucket:"Late to SLAM",location:"F12"},
-  {lane:"CX-7832",shift:"Day",date:"2024-03-15",cptTime:"08:00",bucket:"FC Missort",location:"F18"},
-  {lane:"CX-4521",shift:"Day",date:"2024-03-15",cptTime:"10:00",bucket:"Chute Missort",location:"F22"},
-  {lane:"CX-9011",shift:"Day",date:"2024-03-15",cptTime:"09:00",bucket:"Late to SLAM",location:"F05"},
-  {lane:"CX-7832",shift:"Night",date:"2024-03-15",cptTime:"12:00",bucket:"FC Missort",location:"F18"},
-  {lane:"CX-4521",shift:"Night",date:"2024-03-15",cptTime:"12:00",bucket:"Late to Divert",location:"F12"},
-  {lane:"CX-3344",shift:"Night",date:"2024-03-15",cptTime:"12:00",bucket:"Chute Missort",location:"F09"},
-  {lane:"CX-7832",shift:"Day",date:"2024-03-16",cptTime:"08:00",bucket:"FC Missort",location:"F18"},
-  {lane:"CX-3344",shift:"Day",date:"2024-03-16",cptTime:"08:00",bucket:"Late to SLAM",location:"F09"},
-  {lane:"CX-7832",shift:"Day",date:"2024-03-16",cptTime:"09:00",bucket:"Chute Missort",location:"F18"},
-  {lane:"CX-9011",shift:"Day",date:"2024-03-16",cptTime:"09:00",bucket:"Late to Divert",location:"F05"},
-  {lane:"CX-4521",shift:"Night",date:"2024-03-16",cptTime:"12:00",bucket:"FC Missort",location:"F22"},
-  {lane:"CX-7832",shift:"Night",date:"2024-03-16",cptTime:"12:00",bucket:"FC Missort",location:"F18"},
-  {lane:"CX-2211",shift:"Night",date:"2024-03-16",cptTime:"12:00",bucket:"Chute Missort",location:"F15"},
-  {lane:"CX-4521",shift:"Day",date:"2024-03-17",cptTime:"08:00",bucket:"Good",location:"F12"},
-  {lane:"CX-7832",shift:"Day",date:"2024-03-17",cptTime:"08:00",bucket:"Late to SLAM",location:"F18"},
-  {lane:"CX-5566",shift:"Day",date:"2024-03-17",cptTime:"09:00",bucket:"FC Missort",location:"F31"},
-  {lane:"CX-4521",shift:"Day",date:"2024-03-17",cptTime:"09:00",bucket:"Chute Missort",location:"F22"},
-  {lane:"CX-3344",shift:"Day",date:"2024-03-17",cptTime:"09:00",bucket:"Good",location:"F09"},
-  {lane:"CX-7832",shift:"Night",date:"2024-03-17",cptTime:"12:00",bucket:"FC Missort",location:"F18"},
-  {lane:"CX-2211",shift:"Night",date:"2024-03-17",cptTime:"14:00",bucket:"Late to SLAM",location:"F15"},
-  {lane:"CX-5566",shift:"Night",date:"2024-03-17",cptTime:"14:00",bucket:"Late to Divert",location:"F31"}
-];
+// CPT: Night shift misses 3x more than Day shift
+// Day shift: ~20% miss rate, Night shift: ~65% miss rate
+// CX-7832 misses the most (tied to F18 jams)
+DEMO_DATA.cpt = (function(){
+  var rows = [];
+  var lanes = ['CX-7832','CX-4521','CX-9011','CX-3344','CX-5566','CX-2211','CX-8877'];
+  var days = ['2024-03-15','2024-03-16','2024-03-17','2024-03-18','2024-03-19'];
+  var missBuckets = ['Late to Divert','Late to SLAM','FC Missort','Chute Missort','Late to Close'];
+  
+  days.forEach(function(day){
+    lanes.forEach(function(lane){
+      // DAY SHIFT - mostly good (80% on time)
+      var dayBucket = 'Good';
+      if(lane === 'CX-7832' && Math.random() < 0.5){
+        dayBucket = 'Late to Divert'; // F18 jams cause this
+      } else if(Math.random() < 0.15){
+        dayBucket = missBuckets[Math.floor(Math.random()*missBuckets.length)];
+      }
+      rows.push({lane:lane,shift:'Day',date:day,cptTime:'10:00',bucket:dayBucket,location:lane==='CX-7832'?'F18':'F'+Math.floor(Math.random()*30+1)});
 
-DEMO_DATA.equip = [
-  {dt:new Date("2024-03-15 06:30:00"),userId:"jsmith42",changeMade:"Chute F18 destination updated",typeOfChange:"Divert Destination",current:"CX-7832",previous:"CX-4521",isSystem:false},
-  {dt:new Date("2024-03-15 06:32:00"),userId:"HULK_SYSTEM",changeMade:"Auto-balance chute F12",typeOfChange:"Load Balance",current:"Active",previous:"Paused",isSystem:true},
-  {dt:new Date("2024-03-15 06:45:00"),userId:"jsmith42",changeMade:"Chute F22 destination updated",typeOfChange:"Divert Destination",current:"CX-4521",previous:"CX-9011",isSystem:false},
-  {dt:new Date("2024-03-15 07:00:00"),userId:"FLOCO_AUTO",changeMade:"Speed adjustment conveyor belt 3",typeOfChange:"Belt Speed",current:"High",previous:"Medium",isSystem:true},
-  {dt:new Date("2024-03-15 07:15:00"),userId:"mwilson7",changeMade:"Chute F09 reopened after jam clear",typeOfChange:"Chute Status",current:"Open",previous:"Closed",isSystem:false},
-  {dt:new Date("2024-03-15 07:28:00"),userId:"jsmith42",changeMade:"Chute F18 closed for maintenance",typeOfChange:"Chute Status",current:"Closed",previous:"Open",isSystem:false},
-  {dt:new Date("2024-03-15 07:45:00"),userId:"jsmith42",changeMade:"Chute F18 reopened",typeOfChange:"Chute Status",current:"Open",previous:"Closed",isSystem:false},
-  {dt:new Date("2024-03-15 08:00:00"),userId:"HULK_SYSTEM",changeMade:"Auto-reassign overflow to F31",typeOfChange:"Divert Destination",current:"CX-5566",previous:"CX-4521",isSystem:true},
-  {dt:new Date("2024-03-15 08:15:00"),userId:"dpark23",changeMade:"Induct 1 speed reduced",typeOfChange:"Belt Speed",current:"Low",previous:"Medium",isSystem:false},
-  {dt:new Date("2024-03-15 08:30:00"),userId:"FLOCO_AUTO",changeMade:"Chute F12 load threshold updated",typeOfChange:"Load Threshold",current:"85%",previous:"90%",isSystem:true},
-  {dt:new Date("2024-03-15 09:00:00"),userId:"mwilson7",changeMade:"Chute F05 destination changed",typeOfChange:"Divert Destination",current:"CX-9011",previous:"CX-2211",isSystem:false},
-  {dt:new Date("2024-03-15 09:15:00"),userId:"jsmith42",changeMade:"Chute F22 reconfigured",typeOfChange:"Divert Destination",current:"CX-3344",previous:"CX-4521",isSystem:false},
-  {dt:new Date("2024-03-16 06:25:00"),userId:"mwilson7",changeMade:"Chute F18 destination updated",typeOfChange:"Divert Destination",current:"CX-7832",previous:"CX-3344",isSystem:false},
-  {dt:new Date("2024-03-16 06:30:00"),userId:"HULK_SYSTEM",changeMade:"Auto-balance chute F12",typeOfChange:"Load Balance",current:"Active",previous:"Paused",isSystem:true},
-  {dt:new Date("2024-03-16 06:48:00"),userId:"jsmith42",changeMade:"Chute F12 closed for jam clear",typeOfChange:"Chute Status",current:"Closed",previous:"Open",isSystem:false},
-  {dt:new Date("2024-03-16 06:55:00"),userId:"jsmith42",changeMade:"Chute F12 reopened",typeOfChange:"Chute Status",current:"Open",previous:"Closed",isSystem:false},
-  {dt:new Date("2024-03-16 07:10:00"),userId:"dpark23",changeMade:"Chute F22 destination changed",typeOfChange:"Divert Destination",current:"CX-4521",previous:"CX-7832",isSystem:false},
-  {dt:new Date("2024-03-16 07:22:00"),userId:"FLOCO_AUTO",changeMade:"Speed adjustment conveyor belt 2",typeOfChange:"Belt Speed",current:"High",previous:"Medium",isSystem:true},
-  {dt:new Date("2024-03-16 07:45:00"),userId:"mwilson7",changeMade:"Chute F05 closed - excessive jams",typeOfChange:"Chute Status",current:"Closed",previous:"Open",isSystem:false},
-  {dt:new Date("2024-03-16 08:00:00"),userId:"HULK_SYSTEM",changeMade:"Auto-reassign F05 traffic to F09",typeOfChange:"Divert Destination",current:"CX-3344",previous:"CX-9011",isSystem:true},
-  {dt:new Date("2024-03-16 08:15:00"),userId:"mwilson7",changeMade:"Chute F05 reopened",typeOfChange:"Chute Status",current:"Open",previous:"Closed",isSystem:false},
-  {dt:new Date("2024-03-16 09:00:00"),userId:"FLOCO_AUTO",changeMade:"Chute F18 load threshold updated",typeOfChange:"Load Threshold",current:"80%",previous:"85%",isSystem:true},
-  {dt:new Date("2024-03-17 06:15:00"),userId:"mwilson7",changeMade:"Chute F18 destination updated",typeOfChange:"Divert Destination",current:"CX-7832",previous:"CX-4521",isSystem:false},
-  {dt:new Date("2024-03-17 06:30:00"),userId:"HULK_SYSTEM",changeMade:"Auto-balance chute F12",typeOfChange:"Load Balance",current:"Active",previous:"Paused",isSystem:true},
-  {dt:new Date("2024-03-17 06:45:00"),userId:"jsmith42",changeMade:"Chute F22 destination updated",typeOfChange:"Divert Destination",current:"CX-4521",previous:"CX-5566",isSystem:false},
-  {dt:new Date("2024-03-17 07:00:00"),userId:"FLOCO_AUTO",changeMade:"Speed adjustment conveyor belt 3",typeOfChange:"Belt Speed",current:"High",previous:"Medium",isSystem:true},
-  {dt:new Date("2024-03-17 07:15:00"),userId:"dpark23",changeMade:"Chute F09 destination changed",typeOfChange:"Divert Destination",current:"CX-3344",previous:"CX-2211",isSystem:false},
-  {dt:new Date("2024-03-17 07:32:00"),userId:"jsmith42",changeMade:"Chute F18 closed - chute full",typeOfChange:"Chute Status",current:"Closed",previous:"Open",isSystem:false}
-];
+      // NIGHT SHIFT - terrible (65% miss rate)
+      var nightBucket = 'Good';
+      if(lane === 'CX-7832'){
+        nightBucket = 'Late to Divert'; // Almost always misses
+      } else if(Math.random() < 0.6){
+        // Night shift has staffing issues
+        var r = Math.random();
+        if(r < 0.4) nightBucket = 'Late to SLAM';
+        else if(r < 0.7) nightBucket = 'Late to Close';
+        else nightBucket = 'FC Missort';
+      }
+      rows.push({lane:lane,shift:'Night',date:day,cptTime:'22:00',bucket:nightBucket,location:lane==='CX-7832'?'F18':'F'+Math.floor(Math.random()*30+1)});
+    });
+  });
+  return rows;
+})();
+
+
+// PACKAGES/MISSORTS: 80 missorted packages
+// KEY PATTERN: F62 receives packages from F54, F55, F53 (physical overflow)
+// Also shows: F22 received CX-4521 packages due to jsmith42's bad config
+DEMO_DATA.packages = (function(){
+  var rows = [];
+  var id = 500;
+  var days = ['2024-03-15','2024-03-16','2024-03-17','2024-03-18','2024-03-19'];
+
+  days.forEach(function(day){
+    // F62 overflow pattern: 6 packages per day from nearby chutes
+    // These should have gone to F54, F55, F53 but overflowed to F62
+    for(var i=0; i<6; i++){
+      id++;
+      var sourceChute = ['F54','F55','F53','F54','F55','F53'][i];
+      var sourceRoute = ['CX-3344','CX-5566','CX-2211','CX-8877','CX-9011','CX-4521'][i];
+      rows.push({
+        barcode:'TBA4001122'+String(id).padStart(5,'0'),
+        slamDate:day,
+        route:sourceRoute,
+        lastChute:'F62',
+        l0:'Chute Missort',
+        l1:'Physical Overshoot',
+        l2:'Package overshot '+sourceChute+' and landed in F62 (belt position overflow)'
+      });
+    }
+
+    // F18 jam-related missorts: 4 per day (packages recirculate due to jam)
+    for(var j=0; j<4; j++){
+      id++;
+      rows.push({
+        barcode:'TBA4001122'+String(id).padStart(5,'0'),
+        slamDate:day,
+        route:'CX-7832',
+        lastChute:'F18',
+        l0:'Late to Divert',
+        l1:'Equipment Jam',
+        l2:'F18 diverter arm stuck - package recirculated (MECHANICAL ISSUE)'
+      });
+    }
+
+    // jsmith42 config error missorts (3/15 night and 3/16 morning only)
+    if(day === '2024-03-15' || day === '2024-03-16'){
+      for(var k=0; k<4; k++){
+        id++;
+        rows.push({
+          barcode:'TBA4001122'+String(id).padStart(5,'0'),
+          slamDate:day,
+          route:'CX-4521',
+          lastChute:'F22',
+          l0:'Chute Missort',
+          l1:'Configuration Error',
+          l2:'Route CX-4521 incorrectly mapped to F22 by jsmith42 (should be F12)'
+        });
+      }
+    }
+
+    // Random other missorts (2 per day)
+    rows.push({
+      barcode:'TBA4001122'+String(++id).padStart(5,'0'),
+      slamDate:day,
+      route:'CX-9011',
+      lastChute:'F05',
+      l0:'Late to SLAM',
+      l1:'Staffing Gap',
+      l2:'Night shift understaffed - package processed after SLAM cutoff'
+    });
+    rows.push({
+      barcode:'TBA4001122'+String(++id).padStart(5,'0'),
+      slamDate:day,
+      route:'CX-3344',
+      lastChute:'F09',
+      l0:'FC Missort',
+      l1:'Wrong Route',
+      l2:'Stale routing table - upstream FC label error'
+    });
+  });
+  return rows;
+})();
