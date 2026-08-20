@@ -137,30 +137,30 @@ Upload any CSV and the app automatically identifies the data type based on colum
 ## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   User's Browser                      │
-│                                                       │
-│  ┌─────────┐   ┌──────────────┐   ┌──────────────┐  │
+┌──────────────────────────────────────────────────────┐
+│                   User's Browser                     │
+│                                                      │
+│  ┌─────────┐   ┌──────────────┐   ┌──────────────┐   │
 │  │ CSV Drop │──▶│ PapaParse    │──▶│ Auto-Detect  │  │
 │  │  Zone    │   │ (Parser)     │   │ Column Type  │  │
-│  └─────────┘   └──────────────┘   └──────┬───────┘  │
+│  └─────────┘   └──────────────┘   └──────┬───────┘   │
 │                                           │          │
 │  ┌────────────────────────────────────────▼────────┐ │
-│  │              Data Store (D object)               │ │
+│  │              Data Store (D object)              │ │
 │  │  shipments[] | packages[] | alarms[] | cpt[]    │ │
 │  │  equip[] | bulksearch[]                         │ │
 │  └──────────────────────┬──────────────────────────┘ │
 │                         │                            │
 │  ┌──────────────────────▼──────────────────────────┐ │
-│  │           Rendering Engine                       │ │
+│  │           Rendering Engine                      │ │
 │  │  Chart.js charts | HTML tables | KPI cards      │ │
 │  │  Correlation analysis | Top offender ranking    │ │
 │  └─────────────────────────────────────────────────┘ │
-│                                                       │
+│                                                      │
 │  ┌─────────────────────────────────────────────────┐ │
-│  │  localStorage (persistence across sessions)      │ │
+│  │  localStorage (persistence across sessions)     │ │
 │  └─────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────┘
          │
          │ (static files served via)
          ▼
