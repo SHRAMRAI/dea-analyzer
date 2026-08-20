@@ -55,32 +55,32 @@ CSV File Upload
       │
       ▼
 ┌─────────────────┐
-│  PapaParse       │  Parses CSV into rows
-│  (client-side)   │
+│  PapaParse      │  Parses CSV into rows
+│  (client-side)  │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Auto-Detect     │  Identifies data type from columns
-│  Engine          │
+│  Auto-Detect    │  Identifies data type from columns
+│  Engine         │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Type-Specific   │  Extracts relevant fields, cleans data
-│  Parser          │  (dates, chute names, deduplication)
+│  Type-Specific  │  Extracts relevant fields, cleans data
+│  Parser         │  (dates, chute names, deduplication)
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Data Store      │  In-memory JS object + localStorage
-│  (D object)      │
+│  Data Store     │  In-memory JS object + localStorage
+│  (D object)     │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│  Render Engine   │  KPI cards, Chart.js charts, HTML tables
-│                  │  Correlation analysis, Top offenders
+│  Render Engine  │  KPI cards, Chart.js charts, HTML tables
+│                 │  Correlation analysis, Top offenders
 └─────────────────┘
 ```
 
@@ -176,17 +176,17 @@ CSV File Upload
 
 ```
 ┌────────────────────────────┐
-│       Canopy Platform       │
+│       Canopy Platform      │
 │  ┌──────────────────────┐  │
-│  │   Docker Container    │  │
-│  │   node:18-alpine      │  │
-│  │                        │  │
-│  │   Express.js (port    │  │
-│  │   3000) serves static │  │
-│  │   HTML/JS/CSS files   │  │
-│  │                        │  │
-│  │   /health endpoint    │  │
-│  │   for health checks   │  │
+│  │   Docker Container   │  │
+│  │   node:18-alpine     │  │
+│  │                      │  │
+│  │   Express.js (port   │  │
+│  │   3000) serves static│  │
+│  │   HTML/JS/CSS files  │  │
+│  │                      │  │
+│  │   /health endpoint   │  │
+│  │   for health checks  │  │
 │  └──────────────────────┘  │
 └────────────────────────────┘
 ```
