@@ -34,10 +34,10 @@ During my internship at an Amazon AR site, I noticed operations teams spent **30
 ## What is DEA?
 
 **DEA (Delivery Experience Accuracy)** measures whether a package was sorted correctly and made it to the right delivery route on time. When a package is "DEA Good," it means:
-- It was inducted into the sorter ✅
-- Diverted to the correct chute ✅
-- Loaded onto the right truck ✅
-- Departed before the CPT (Critical Pull Time) deadline ✅
+- It was inducted into the sorter 
+- Diverted to the correct chute 
+- Loaded onto the right truck 
+- Departed before the CPT (Critical Pull Time) deadline 
 
 When any of those steps fail, it becomes a **DEA miss** — meaning the customer's package may arrive late.
 
@@ -358,7 +358,7 @@ The `sample-data/` directory contains example CSV files with **synthetic data** 
 | `cpt_sample.csv` | 25 | CPT miss records by lane and shift |
 | `equipment_sample.csv` | 35 | Equipment configuration change audit log |
 
-> ⚠️ **All data in sample files is synthetic/fake.** No real operational data is included.
+>  **All data in sample files is synthetic/fake.** No real operational data is included.
 
 ---
 
